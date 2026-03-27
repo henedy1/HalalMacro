@@ -151,6 +151,18 @@
                 kcal: 400, pro: 32, carb: 55, fat: 7,
                 ingredients: [{ base: "1/2 cup Rolled Oats", subs: ["1/2 cup Quinoa Flakes", "1/2 cup Cream of Wheat"] }, { base: "1 scoop Halal-certified Vanilla Whey Protein", subs: ["1 scoop Plant-based Protein", "3 tbsp Hemp Seeds"] }, "1/2 medium Apple (diced)", { base: "1 cup Unsweetened Almond Milk", subs: ["1 cup Oat Milk", "1 cup Skim Milk"] }, "Cinnamon"],
                 instructions: "Cook oats with milk on the stove or microwave. Let it cool slightly, then vigorously stir in the protein powder (to avoid clumping). Top with diced apples and cinnamon."
+            },
+            {
+                name: "Halal Protein Pancakes",
+                kcal: 450, pro: 35, carb: 45, fat: 12,
+                ingredients: [{ base: "1/2 cup Oat Flour", subs: ["1/2 cup Almond Flour", "1/2 cup Whole Wheat Flour"] }, { base: "1 scoop Halal-certified Vanilla Whey", subs: ["1 scoop Plant-based Protein"] }, { base: "1 Large Egg", subs: ["1/4 cup Egg Whites"] }, { base: "1/4 cup Unsweetened Almond Milk", subs: ["1/4 cup Skim Milk", "1/4 cup Water"] }],
+                instructions: "Mix oat flour, protein powder, egg, and almond milk into a batter. Cook on a non-stick skillet over medium heat until bubbles form, then flip."
+            },
+            {
+                name: "Shakshuka with High-Protein Bread",
+                kcal: 390, pro: 25, carb: 35, fat: 16,
+                ingredients: [{ base: "2 Large Eggs", subs: ["150g Soft Tofu (Scrambled)"] }, "1/2 cup Crushed Tomatoes", "1/4 Bell Pepper & Onion (diced)", { base: "1 slice High-Protein Bread", subs: ["1 small Whole Wheat Pita"] }],
+                instructions: "Sauté onions and peppers in a pan. Add crushed tomatoes and spices (cumin, paprika), and simmer. Make wells in the sauce, crack the eggs into them, cover and cook until eggs are set. Serve with bread."
             }
         ];
 
@@ -234,6 +246,7 @@
         function generateMealPlan() {
             let bestPlan = null;
             let bestDiff = 9999;
+            let validPlans = []; // Pool to store all perfect matches
             
             // Get target from input
             const targetInput = document.getElementById('target-calories');
@@ -289,19 +302,26 @@
                     plan.meals.push({ type: `Snack ${index + 1}`, icon: 'ph-apple-podcasts', data: snack });
                 });
 
-                // If within 40 calories and protein is good, return immediately
+                // If within 40 calories and protein is good, add to our pool of valid plans!
                 if (kcalDiff <= 40 && validMacros) {
-                    return plan;
+                    validPlans.push(plan);
+                    // Once we find 30 different valid combinations, stop looping to save processing power
+                    if (validPlans.length >= 30) break; 
                 }
 
-                // Otherwise track the closest one in case we fail to find a perfect match
+                // Track the closest one overall in case we fail to find ANY perfect match
                 if (kcalDiff < bestDiff) {
                     bestDiff = kcalDiff;
                     bestPlan = plan;
                 }
             }
             
-            return bestPlan; // Return the closest match found
+            // If we found perfect matches, pick one entirely at random!
+            if (validPlans.length > 0) {
+                return validPlans[Math.floor(Math.random() * validPlans.length)];
+            }
+            
+            return bestPlan; // Fallback: Return the closest match found if no perfect ones exist
         }
 
         // --- UI RENDERING ---
