@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halal Macro Planner | Custom kcal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for modern UI icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .meal-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .transition-transform { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="ph ph-leaf text-brand-600 text-3xl"></i>
+                <span class="font-bold text-xl tracking-tight text-slate-900">Halal<span class="text-brand-600">Macro</span></span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <label for="target-calories" class="text-sm font-medium text-slate-600">Target kcal:</label>
+                    <input type="number" id="target-calories" value="1825" step="50" class="w-20 bg-transparent font-bold text-slate-900 focus:outline-none">
+                </div>
+                <button onclick="generateAndRenderPlan()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+                    <i class="ph ph-arrows-clockwise text-lg"></i>
+                    <span class="hidden sm:inline">Generate New Daily Plan</span>
+                    <span class="sm:hidden">New Plan</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Empty State (Shown initially) -->
+        <div id="empty-state" class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="bg-brand-50 p-6 rounded-full mb-6">
+                <i class="ph ph-bowl-food text-6xl text-brand-600"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-4">Your Custom Halal Plan</h1>
+            <p class="text-slate-500 max-w-lg mb-8 text-lg">Set your target calories in the top right, then click the button below to generate a randomized daily meal plan using strictly Halal ingredients.</p>
+            
+            <div class="md:hidden flex items-center justify-center gap-2 bg-slate-100 px-4 py-3 rounded-xl border border-slate-200 mb-6">
+                <label for="target-calories-mobile" class="text-sm font-medium text-slate-600">Target kcal:</label>
+                <input type="number" id="target-calories-mobile" value="1825" step="50" onchange="document.getElementById('target-calories').value = this.value" class="w-20 bg-transparent font-bold text-slate-900 focus:outline-none text-lg">
+            </div>
+
+            <button onclick="generateAndRenderPlan()" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg shadow-brand-500/30 flex items-center gap-2">
+                <i class="ph ph-magic-wand text-xl"></i> Generate My First Plan
+            </button>
+        </div>
+
+        <!-- Plan Container (Hidden initially) -->
+        <div id="plan-container" class="hidden flex-col gap-8">
+            
+            <!-- Daily Summary Dashboard -->
+            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 fade-in">
+                <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="ph ph-chart-pie-slice text-brand-600 text-xl"></i> Daily Macro Targets
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
+                        <p class="text-sm text-slate-500 font-medium mb-1">Calories</p>
+                        <p class="text-2xl font-bold text-slate-900" id="total-kcal">0</p>
+                        <p class="text-xs text-slate-400 mt-1" id="goal-kcal-text">Goal: 1825 kcal</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 text-center">
+                        <p class="text-sm text-blue-600 font-medium mb-1">Protein</p>
+                        <p class="text-2xl font-bold text-slate-900" id="total-pro">0g</p>
+                        <p class="text-xs text-slate-400 mt-1" id="goal-pro-text">Goal: 130-155g</p>
+                    </div>
+                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 text-center">
+                        <p class="text-sm text-amber-600 font-medium mb-1">Carbs</p>
+                        <p class="text-2xl font-bold text-slate-900" id="total-carb">0g</p>
+                    </div>
+                    <div class="bg-rose-50 rounded-xl p-4 border border-rose-100 text-center">
+                        <p class="text-sm text-rose-600 font-medium mb-1">Fats</p>
+                        <p class="text-2xl font-bold text-slate-900" id="total-fat">0g</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Meals List -->
+            <section class="space-y-6" id="meals-list">
+                <!-- Meal cards will be injected here via JS -->
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>Strictly Halal • No Alcohol • High Protein</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- MOCK DATA ---
+        // All meat is explicitly marked Halal. No alcohol/wine used in any recipes.
+        // Some ingredients now contain {base, subs} for easy swapping.
+        
+        const breakfasts = [
+            {
+                name: "High-Protein Scrambled Eggs & Avocado Toast",
+                kcal: 420, pro: 26, carb: 35, fat: 20,
+                ingredients: [{ base: "3 Large Eggs", subs: ["1 cup Liquid Egg Whites", "150g Tofu (Scrambled)"] }, "2 slices Whole Wheat Bread", { base: "1/4 medium Avocado", subs: ["2 tbsp Hummus", "1 tbsp Light Cream Cheese", "Mashed Green Peas"] }, "Salt, pepper, chili flakes"],
+                instructions: "Toast the whole wheat bread. Mash the avocado (or your chosen substitute) and spread it on the toast. Scramble the eggs in a non-stick pan over medium heat. Serve eggs alongside or on top of the toast."
+            },
+            {
+                name: "Greek Yogurt Berry Power Bowl",
+                kcal: 380, pro: 30, carb: 40, fat: 12,
+                ingredients: [{ base: "1 cup Non-fat Plain Greek Yogurt", subs: ["1 cup Low-fat Cottage Cheese", "1 cup Soy Yogurt (High Protein)"] }, { base: "1/2 cup Mixed Berries", subs: ["1/2 diced Apple", "1/2 cup Mango chunks"] }, { base: "1/4 cup Almonds (sliced)", subs: ["1/4 cup Walnuts", "2 tbsp Chia Seeds"] }, "1 tbsp Honey"],
+                instructions: "Add the Greek yogurt to a bowl. Top with washed fruit and your choice of nuts/seeds. Drizzle with honey before eating."
+            },
+            {
+                name: "Halal Protein Oatmeal",
+                kcal: 400, pro: 32, carb: 55, fat: 7,
+                ingredients: [{ base: "1/2 cup Rolled Oats", subs: ["1/2 cup Quinoa Flakes", "1/2 cup Cream of Wheat"] }, { base: "1 scoop Halal-certified Vanilla Whey Protein", subs: ["1 scoop Plant-based Protein", "3 tbsp Hemp Seeds"] }, "1/2 medium Apple (diced)", { base: "1 cup Unsweetened Almond Milk", subs: ["1 cup Oat Milk", "1 cup Skim Milk"] }, "Cinnamon"],
+                instructions: "Cook oats with milk on the stove or microwave. Let it cool slightly, then vigorously stir in the protein powder (to avoid clumping). Top with diced apples and cinnamon."
+            }
+        ];
+
+        const lunches = [
+            {
+                name: "Grilled Halal Chicken & Quinoa Salad",
+                kcal: 500, pro: 45, carb: 45, fat: 16,
+                ingredients: [{ base: "150g Halal Chicken Breast", subs: ["150g Halal Turkey Breast", "150g Halal White Fish", "150g Extra Firm Tofu"] }, { base: "1/2 cup cooked Quinoa", subs: ["1/2 cup Brown Rice", "1/2 cup Couscous"] }, "2 cups Mixed Greens", "Cherry tomatoes & cucumbers", "1 tbsp Olive Oil & Lemon dressing"],
+                instructions: "Season the Halal chicken breast with herbs and grill until fully cooked. Slice the chicken. Toss mixed greens, grains, and vegetables with the dressing. Top with chicken."
+            },
+            {
+                name: "Halal Turkey & Hummus Wrap",
+                kcal: 480, pro: 38, carb: 50, fat: 15,
+                ingredients: ["1 Large Whole Wheat Tortilla", { base: "120g Halal Turkey Deli Meat", subs: ["120g Halal Chicken Deli Meat", "120g Halal Roast Beef Deli"] }, { base: "2 tbsp Hummus", subs: ["2 tbsp Tzatziki (Halal)", "2 tbsp Mashed Avocado"] }, "Handful of Spinach", "Sliced Bell Peppers"],
+                instructions: "Lay the tortilla flat and spread your hummus or spread evenly. Layer the spinach, bell peppers, and Halal turkey meat. Roll tightly into a wrap and slice in half."
+            },
+            {
+                name: "Spicy Halal Beef & Broccoli Bowl",
+                kcal: 520, pro: 42, carb: 50, fat: 16,
+                ingredients: [{ base: "130g Halal Lean Beef strips", subs: ["130g Halal Chicken Thigh strips", "130g Tempeh strips"] }, "1.5 cups Broccoli florets", { base: "1/2 cup cooked Brown Rice", subs: ["1/2 cup cooked Quinoa", "1 cup Cauliflower Rice"] }, "1 tbsp Soy Sauce (Alcohol-free/Halal)", "Garlic & Ginger"],
+                instructions: "Stir-fry the Halal beef strips in a pan with garlic and ginger until browned. Add broccoli and a splash of water, cover to steam for 3 mins. Add soy sauce and serve over your rice choice."
+            }
+        ];
+
+        const dinners = [
+            {
+                name: "Baked Salmon with Sweet Potato",
+                kcal: 550, pro: 40, carb: 45, fat: 24,
+                ingredients: [{ base: "150g Atlantic Salmon fillet", subs: ["150g Halal Tilapia", "150g Halal Cod", "150g Halal Chicken Breast"] }, { base: "150g Sweet Potato (cubed)", subs: ["150g Baby Potatoes", "150g Butternut Squash"] }, "100g Asparagus", "1 tsp Olive Oil", "Lemon, salt, pepper"],
+                instructions: "Preheat oven to 400°F (200°C). Toss potato/squash cubes in olive oil and roast for 15 mins. Add salmon and asparagus to the pan, season with lemon and pepper, and bake for another 12-15 mins."
+            },
+            {
+                name: "Halal Chicken Fajita Bowl",
+                kcal: 580, pro: 50, carb: 60, fat: 15,
+                ingredients: [{ base: "160g Halal Chicken Breast (sliced)", subs: ["160g Halal Beef strips", "160g Halal Turkey Breast"] }, { base: "1/2 cup Black Beans (rinsed)", subs: ["1/2 cup Pinto Beans", "1/2 cup Lentils"] }, "1/2 cup cooked White Rice", "1 Bell Pepper & 1/2 Onion (sliced)", "Fajita spices (cumin, paprika)"],
+                instructions: "Season Halal chicken with fajita spices. Sauté onions and peppers until soft, remove from pan. Cook chicken in the same pan. Assemble bowl with rice, beans, veggies, and chicken."
+            },
+            {
+                name: "Lean Halal Ground Beef Pasta",
+                kcal: 600, pro: 45, carb: 65, fat: 18,
+                ingredients: [{ base: "130g Halal 95% Lean Ground Beef", subs: ["130g Halal Ground Turkey", "130g Halal Ground Chicken"] }, { base: "2 oz (dry) Whole Wheat Pasta", subs: ["2 oz Chickpea Pasta", "1.5 cups Zucchini Noodles"] }, "1/2 cup Tomato Marinara Sauce (Check for no wine)", "Garlic, onions, Italian herbs"],
+                instructions: "Boil pasta according to package directions. Sauté onions and garlic, add Halal ground beef and cook until browned. Pour in marinara sauce and simmer. Mix with cooked pasta or noodles."
+            }
+        ];
+
+        const snacks = [
+            {
+                name: "Cottage Cheese & Pineapple",
+                kcal: 200, pro: 24, carb: 20, fat: 3,
+                ingredients: [{ base: "1 cup Low-fat Cottage Cheese", subs: ["1 cup Greek Yogurt", "1 cup Skyr"] }, { base: "1/2 cup Pineapple chunks", subs: ["1/2 cup Peaches", "1/2 cup Cantaloupe"] }],
+                instructions: "Serve cottage cheese in a bowl topped with fresh or canned (in water) fruit chunks."
+            },
+            {
+                name: "Hard-Boiled Eggs & Almonds",
+                kcal: 250, pro: 16, carb: 4, fat: 19,
+                ingredients: [{ base: "2 Large Eggs", subs: ["1/2 cup Edamame", "50g Halal Turkey Pepperoni"] }, { base: "15g Raw Almonds", subs: ["15g Walnuts", "15g Cashews"] }],
+                instructions: "Boil eggs for 9-12 minutes depending on desired doneness. Peel and eat alongside nuts."
+            },
+            {
+                name: "Halal Beef Jerky & Apple",
+                kcal: 220, pro: 20, carb: 25, fat: 4,
+                ingredients: [{ base: "1.5 oz Halal-certified Beef Jerky", subs: ["1.5 oz Halal Turkey Jerky", "1/4 cup Roasted Chickpeas"] }, { base: "1 Medium Apple", subs: ["1 Medium Pear", "1 Medium Orange"] }],
+                instructions: "A quick, on-the-go snack. Eat the Halal beef jerky and fruit together for a sweet and savory mix."
+            },
+            {
+                name: "Simple Protein Shake",
+                kcal: 160, pro: 25, carb: 5, fat: 4,
+                ingredients: [{ base: "1 scoop Halal-certified Whey Protein", subs: ["1 scoop Vegan Protein Powder", "1/2 cup Greek Yogurt"] }, { base: "1 cup Unsweetened Almond Milk", subs: ["1 cup Water", "1 cup Soy Milk"] }, "Ice"],
+                instructions: "Combine protein powder, liquid, and ice in a shaker bottle or blender. Mix until smooth."
+            },
+            {
+                name: "Tuna Salad on Cucumber Slices",
+                kcal: 180, pro: 22, carb: 5, fat: 8,
+                ingredients: [{ base: "1 can (chunk light) Tuna in water", subs: ["1 can Canned Chicken breast", "1/2 cup Mashed Chickpeas"] }, "1 tbsp Greek yogurt (sub for mayo)", { base: "1/2 large Cucumber (sliced)", subs: ["5 Whole Wheat Crackers", "2 Celery Stalks", "Lettuce Cups"] }],
+                instructions: "Drain tuna and mix with Greek yogurt, salt, and pepper. Spoon the mixture onto your chosen base."
+            }
+        ];
+
+        // --- ALGORITHM ---
+        // Generates random combinations until it finds one that fits the calorie and protein goals.
+        function generateMealPlan() {
+            let bestPlan = null;
+            let bestDiff = 9999;
+            
+            // Get target from input
+            const targetInput = document.getElementById('target-calories');
+            const targetKcal = parseInt(targetInput ? targetInput.value : 1825) || 1825;
+            
+            // Scale protein roughly based on calories (approx 0.071 to 0.085g per kcal)
+            const minPro = Math.floor(targetKcal * 0.071);
+            const maxPro = Math.floor(targetKcal * 0.085);
+
+            // Try up to 2000 random combinations to find the perfect fit
+            for (let i = 0; i < 2000; i++) {
+                const b = breakfasts[Math.floor(Math.random() * breakfasts.length)];
+                const l = lunches[Math.floor(Math.random() * lunches.length)];
+                const d = dinners[Math.floor(Math.random() * dinners.length)];
+                
+                // Dynamically adjust number of snacks based on target calories
+                let numSnacks = 1;
+                if (targetKcal > 2100) numSnacks = Math.random() > 0.5 ? 3 : 2;
+                else if (targetKcal > 1700) numSnacks = Math.random() > 0.5 ? 2 : 1;
+                else numSnacks = Math.random() > 0.5 ? 1 : 0;
+                
+                const s = [];
+                let availableSnacks = [...snacks];
+                
+                for(let j=0; j < numSnacks; j++) {
+                    if (availableSnacks.length === 0) break;
+                    const snackIdx = Math.floor(Math.random() * availableSnacks.length);
+                    s.push(availableSnacks[snackIdx]);
+                    availableSnacks.splice(snackIdx, 1); // Prevent duplicate snacks
+                }
+
+                const totalKcal = b.kcal + l.kcal + d.kcal + s.reduce((sum, sn) => sum + sn.kcal, 0);
+                const totalPro = b.pro + l.pro + d.pro + s.reduce((sum, sn) => sum + sn.pro, 0);
+                const totalCarb = b.carb + l.carb + d.carb + s.reduce((sum, sn) => sum + sn.carb, 0);
+                const totalFat = b.fat + l.fat + d.fat + s.reduce((sum, sn) => sum + sn.fat, 0);
+
+                const kcalDiff = Math.abs(totalKcal - targetKcal);
+                // Be slightly more lenient with macros if target is far from the 1825 base
+                const validMacros = totalPro >= (minPro - 10) && totalPro <= (maxPro + 10);
+
+                const plan = {
+                    meals: [
+                        { type: 'Breakfast', icon: 'ph-sun', data: b },
+                        { type: 'Lunch', icon: 'ph-hamburger', data: l },
+                        { type: 'Dinner', icon: 'ph-moon-stars', data: d }
+                    ],
+                    totals: { kcal: totalKcal, pro: totalPro, carb: totalCarb, fat: totalFat },
+                    targets: { kcal: targetKcal, minPro, maxPro }
+                };
+
+                // Add snacks to the meal array
+                s.forEach((snack, index) => {
+                    plan.meals.push({ type: `Snack ${index + 1}`, icon: 'ph-apple-podcasts', data: snack });
+                });
+
+                // If within 40 calories and protein is good, return immediately
+                if (kcalDiff <= 40 && validMacros) {
+                    return plan;
+                }
+
+                // Otherwise track the closest one in case we fail to find a perfect match
+                if (kcalDiff < bestDiff) {
+                    bestDiff = kcalDiff;
+                    bestPlan = plan;
+                }
+            }
+            
+            return bestPlan; // Return the closest match found
+        }
+
+        // --- UI RENDERING ---
+        function generateAndRenderPlan() {
+            // Sync mobile input with desktop input if used
+            const mobileInput = document.getElementById('target-calories-mobile');
+            const desktopInput = document.getElementById('target-calories');
+            if (mobileInput && desktopInput && document.getElementById('empty-state').classList.contains('hidden') === false) {
+                 desktopInput.value = mobileInput.value;
+            }
+
+            // Hide empty state, show plan container
+            document.getElementById('empty-state').classList.add('hidden');
+            const planContainer = document.getElementById('plan-container');
+            planContainer.classList.remove('hidden');
+            
+            // Generate data
+            const plan = generateMealPlan();
+
+            // Re-trigger animations by briefly removing and adding the container contents
+            const mealsList = document.getElementById('meals-list');
+            mealsList.innerHTML = ''; 
+
+            // Update Dashboard
+            document.getElementById('total-kcal').innerText = plan.totals.kcal;
+            document.getElementById('total-pro').innerText = plan.totals.pro + 'g';
+            document.getElementById('total-carb').innerText = plan.totals.carb + 'g';
+            document.getElementById('total-fat').innerText = plan.totals.fat + 'g';
+            
+            // Update Goal Texts
+            document.getElementById('goal-kcal-text').innerText = `Goal: ${plan.targets.kcal} kcal`;
+            document.getElementById('goal-pro-text').innerText = `Goal: ${plan.targets.minPro}-${plan.targets.maxPro}g`;
+
+            // Reorder meals logically: Breakfast, Lunch, Snack 1, Dinner, Snack 2
+            const orderedMeals = [];
+            const m = plan.meals;
+            const b = m.find(x => x.type === 'Breakfast');
+            const l = m.find(x => x.type === 'Lunch');
+            const d = m.find(x => x.type === 'Dinner');
+            const s1 = m.find(x => x.type === 'Snack 1');
+            const s2 = m.find(x => x.type === 'Snack 2');
+            const s3 = m.find(x => x.type === 'Snack 3');
+
+            if(b) orderedMeals.push(b);
+            if(l) orderedMeals.push(l);
+            if(s1) orderedMeals.push(s1);
+            if(d) orderedMeals.push(d);
+            if(s2) orderedMeals.push(s2);
+            if(s3) orderedMeals.push(s3);
+
+            // Render Meals
+            orderedMeals.forEach((item, index) => {
+                const meal = item.data;
+                const delay = index * 0.1; // Staggered animation delay
+                
+                const ingredientsHtml = meal.ingredients.map(ing => {
+                    if (typeof ing === 'string') {
+                        return `<li class="flex items-start gap-2 text-sm">
+                                    <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
+                                    <span class="ingredient-text">${ing}</span>
+                                </li>`;
+                    } else {
+                        const allOptions = [ing.base, ...ing.subs];
+                        const optionsJson = JSON.stringify(allOptions).replace(/"/g, '&quot;');
+                        return `<li class="flex items-start gap-2 text-sm group">
+                                    <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
+                                    <span class="ingredient-text transition-colors duration-300">${ing.base}</span>
+                                    <button onclick="swapIngredient(this)" data-options="${optionsJson}" class="ml-auto text-slate-300 hover:text-brand-600 focus:outline-none transition-colors" title="Swap for roughly equivalent alternative">
+                                        <i class="ph ph-arrows-left-right text-base"></i>
+                                    </button>
+                                </li>`;
+                    }
+                }).join('');
+
+                const cardHtml = `
+                    <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden meal-card transition-transform fade-in" style="animation-delay: ${delay}s; animation-fill-mode: both;">
+                        <div class="p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4 border-b border-slate-100 pb-4">
+                                <div>
+                                    <div class="flex items-center gap-2 text-brand-600 font-semibold text-sm mb-1 uppercase tracking-wider">
+                                        <i class="ph ${item.icon} text-lg"></i> ${item.type}
+                                    </div>
+                                    <h3 class="text-xl font-bold text-slate-900">${meal.name}</h3>
+                                </div>
+                                <div class="flex flex-wrap gap-2 sm:justify-end">
+                                    <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm font-semibold">${meal.kcal} kcal</span>
+                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">P: ${meal.pro}g</span>
+                                    <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">C: ${meal.carb}g</span>
+                                    <span class="bg-rose-50 text-rose-700 px-3 py-1 rounded-full text-sm font-semibold">F: ${meal.fat}g</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
+                                        <i class="ph ph-shopping-basket"></i> Ingredients
+                                    </h4>
+                                    <ul class="space-y-2 text-slate-600">
+                                        ${ingredientsHtml}
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl">
+                                    <h4 class="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
+                                        <i class="ph ph-cooking-pot"></i> Instructions
+                                    </h4>
+                                    <p class="text-slate-600 text-sm leading-relaxed">
+                                        ${meal.instructions}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                `;
+                mealsList.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        // --- INTERACTIVITY ---
+        function swapIngredient(btn) {
+            const span = btn.parentElement.querySelector('.ingredient-text');
+            const options = JSON.parse(btn.getAttribute('data-options'));
+            
+            // Find current index and cycle to the next one
+            let currentIdx = options.indexOf(span.innerText);
+            let nextIdx = (currentIdx + 1) % options.length;
+            span.innerText = options[nextIdx];
+            
+            // Quick visual highlight to show it changed
+            span.classList.add('text-brand-600', 'font-medium');
+            setTimeout(() => {
+                span.classList.remove('text-brand-600', 'font-medium');
+            }, 400);
+        }
+    </script>
+</body>
+</html>
