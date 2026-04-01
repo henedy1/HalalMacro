@@ -135,109 +135,115 @@
         
         const breakfasts = [
             {
-                name: "High-Protein Scrambled Eggs & Avocado Toast",
+                name: "High-Protein Scrambled Eggs & Bread",
                 kcal: 420, pro: 26, carb: 35, fat: 20,
-                ingredients: [{ base: "3 Large Eggs", subs: ["1 cup Liquid Egg Whites", "150g Tofu (Scrambled)"] }, "2 slices Whole Wheat Bread", { base: "1/4 medium Avocado", subs: ["2 tbsp Hummus", "1 tbsp Light Cream Cheese", "Mashed Green Peas"] }, "Salt, pepper, chili flakes"],
-                instructions: "Toast the whole wheat bread. Mash the avocado (or your chosen substitute) and spread it on the toast. Scramble the eggs in a non-stick pan over medium heat. Serve eggs alongside or on top of the toast."
+                ingredients: [{ base: "3 Eggs (Boiled)", subs: ["150g Tofu (Firm)"] }, { base: "2 slices Whole Wheat Bread", subs: ["1 Pita Bread"] }, { base: "2 tbsp Hummus", subs: ["2 tbsp Baba Ghanoush", "30g Feta Cheese"] }, "Salt, pepper, chili flakes"],
+                instructions: "Toast the bread. Spread hummus or your chosen substitute. Mash or scramble the eggs to your liking and serve alongside."
             },
             {
-                name: "Greek Yogurt Berry Power Bowl",
+                name: "Greek Yogurt Power Bowl",
                 kcal: 380, pro: 30, carb: 40, fat: 12,
-                ingredients: [{ base: "1 cup Non-fat Plain Greek Yogurt", subs: ["1 cup Low-fat Cottage Cheese", "1 cup Soy Yogurt (High Protein)"] }, { base: "1/2 cup Mixed Berries", subs: ["1/2 diced Apple", "1/2 cup Mango chunks"] }, { base: "1/4 cup Almonds (sliced)", subs: ["1/4 cup Walnuts", "2 tbsp Chia Seeds"] }, "1 tbsp Honey"],
-                instructions: "Add the Greek yogurt to a bowl. Top with washed fruit and your choice of nuts/seeds. Drizzle with honey before eating."
+                ingredients: [{ base: "1 cup Greek Yogurt (Plain)", subs: ["1 cup Low-fat Cottage Cheese"] }, { base: "1 Medium Banana (Raw)", subs: ["1 Apple (Raw)", "100g Watermelon", "100g Grapes"] }, { base: "15g Almonds (Raw)", subs: ["15g Walnuts", "15g Pistachios (Roasted)", "15g Sunflower Seeds"] }, "1 tbsp Honey"],
+                instructions: "Add the Greek yogurt to a bowl. Top with chopped fruit and your choice of nuts/seeds. Drizzle with honey before eating."
             },
             {
                 name: "Halal Protein Oatmeal",
                 kcal: 400, pro: 32, carb: 55, fat: 7,
-                ingredients: [{ base: "1/2 cup Rolled Oats", subs: ["1/2 cup Quinoa Flakes", "1/2 cup Cream of Wheat"] }, { base: "1 scoop Halal-certified Vanilla Whey Protein", subs: ["1 scoop Plant-based Protein", "3 tbsp Hemp Seeds"] }, "1/2 medium Apple (diced)", { base: "1 cup Unsweetened Almond Milk", subs: ["1 cup Oat Milk", "1 cup Skim Milk"] }, "Cinnamon"],
-                instructions: "Cook oats with milk on the stove or microwave. Let it cool slightly, then vigorously stir in the protein powder (to avoid clumping). Top with diced apples and cinnamon."
+                ingredients: [{ base: "1/2 cup Oats (Dry)", subs: ["1/2 cup Quinoa (Cooked)"] }, { base: "1 scoop Halal-certified Vanilla Whey Protein", subs: ["1 scoop Plant-based Protein"] }, { base: "50g Dates (Medjool)", subs: ["1 Apple (Raw)"] }, { base: "1 cup Whole Milk", subs: ["1 cup Unsweetened Almond Milk"] }, "Cinnamon"],
+                instructions: "Cook oats with milk on the stove or microwave. Let it cool slightly, then vigorously stir in the protein powder. Top with chopped dates and cinnamon."
             },
             {
                 name: "Halal Protein Pancakes",
                 kcal: 450, pro: 35, carb: 45, fat: 12,
-                ingredients: [{ base: "1/2 cup Oat Flour", subs: ["1/2 cup Almond Flour", "1/2 cup Whole Wheat Flour"] }, { base: "1 scoop Halal-certified Vanilla Whey", subs: ["1 scoop Plant-based Protein"] }, { base: "1 Large Egg", subs: ["1/4 cup Egg Whites"] }, { base: "1/4 cup Unsweetened Almond Milk", subs: ["1/4 cup Skim Milk", "1/4 cup Water"] }],
-                instructions: "Mix oat flour, protein powder, egg, and almond milk into a batter. Cook on a non-stick skillet over medium heat until bubbles form, then flip."
+                ingredients: [{ base: "150g Pancakes (Plain)", subs: ["2 slices Whole Wheat Bread"] }, { base: "1 scoop Halal-certified Vanilla Whey", subs: ["1 scoop Plant-based Protein"] }, { base: "2 Eggs (Boiled)", subs: ["1/4 cup Egg Whites"] }, { base: "1 tbsp Butter", subs: ["1 tbsp Cream Cheese"] }],
+                instructions: "Warm the plain pancakes. Top with a tiny bit of butter. Mix protein powder with water to make a syrup, or serve boiled eggs on the side for protein."
             },
             {
-                name: "Shakshuka with High-Protein Bread",
-                kcal: 390, pro: 25, carb: 35, fat: 16,
-                ingredients: [{ base: "2 Large Eggs", subs: ["150g Soft Tofu (Scrambled)"] }, "1/2 cup Crushed Tomatoes", "1/4 Bell Pepper & Onion (diced)", { base: "1 slice High-Protein Bread", subs: ["1 small Whole Wheat Pita"] }],
-                instructions: "Sauté onions and peppers in a pan. Add crushed tomatoes and spices (cumin, paprika), and simmer. Make wells in the sauce, crack the eggs into them, cover and cook until eggs are set. Serve with bread."
+                name: "Middle Eastern Sujuk & Labneh Plate",
+                kcal: 460, pro: 25, carb: 35, fat: 24,
+                ingredients: [{ base: "100g Labneh", subs: ["100g Feta Cheese", "100g Greek Yogurt (Plain)"] }, { base: "50g Halal Beef Sujuk", subs: ["2 Eggs (Boiled)"] }, { base: "1 Pita Bread", subs: ["2 slices Whole Wheat Bread"] }, "100g Foul Mudammas", { base: "20g Olives (Black)", subs: ["15g Almonds (Raw)"] }],
+                instructions: "Serve Labneh drizzled with a tiny bit of olive oil. Cook Sujuk in a pan until warm. Warm the Foul Mudammas. Serve with Pita and Olives."
             }
         ];
 
         const lunches = [
             {
-                name: "Grilled Halal Chicken & Quinoa Salad",
+                name: "Grilled Halal Chicken & Grain Salad",
                 kcal: 500, pro: 45, carb: 45, fat: 16,
-                ingredients: [{ base: "150g Halal Chicken Breast", subs: ["150g Halal Turkey Breast", "150g Halal White Fish", "150g Extra Firm Tofu"] }, { base: "1/2 cup cooked Quinoa", subs: ["1/2 cup Brown Rice", "1/2 cup Couscous"] }, "2 cups Mixed Greens", "Cherry tomatoes & cucumbers", "1 tbsp Olive Oil & Lemon dressing"],
-                instructions: "Season the Halal chicken breast with herbs and grill until fully cooked. Slice the chicken. Toss mixed greens, grains, and vegetables with the dressing. Top with chicken."
+                ingredients: [{ base: "150g Chicken Breast (Grilled)", subs: ["150g Tilapia (Baked)", "150g Tofu (Firm)"] }, { base: "1/2 cup Quinoa (Cooked)", subs: ["1/2 cup Basmati Rice (Cooked)", "1/2 cup Couscous (Cooked)"] }, "2 cups Mixed Green Salad", { base: "100g Cucumber", subs: ["100g Carrots (Raw)"] }, "1 tbsp Olive Oil & Lemon dressing"],
+                instructions: "Slice the grilled chicken. Toss the mixed green salad, grains, and cucumber with the dressing. Top with chicken."
             },
             {
-                name: "Halal Turkey & Hummus Wrap",
+                name: "Halal Beef & Hummus Wrap",
                 kcal: 480, pro: 38, carb: 50, fat: 15,
-                ingredients: ["1 Large Whole Wheat Tortilla", { base: "120g Halal Turkey Deli Meat", subs: ["120g Halal Chicken Deli Meat", "120g Halal Roast Beef Deli"] }, { base: "2 tbsp Hummus", subs: ["2 tbsp Tzatziki (Halal)", "2 tbsp Mashed Avocado"] }, "Handful of Spinach", "Sliced Bell Peppers"],
-                instructions: "Lay the tortilla flat and spread your hummus or spread evenly. Layer the spinach, bell peppers, and Halal turkey meat. Roll tightly into a wrap and slice in half."
+                ingredients: [{ base: "1 Pita Bread", subs: ["1 Large Whole Wheat Tortilla"] }, { base: "120g Halal Ground Beef (Cooked)", subs: ["120g Chicken Breast (Grilled)"] }, { base: "2 tbsp Hummus", subs: ["2 tbsp Baba Ghanoush", "2 tbsp Labneh"] }, "Handful of Mixed Green Salad", "Sliced Bell Peppers"],
+                instructions: "Open the pita bread and spread your hummus evenly. Layer the salad greens, bell peppers, and Halal ground beef. Wrap tightly."
             },
             {
-                name: "Spicy Halal Beef & Broccoli Bowl",
-                kcal: 520, pro: 42, carb: 50, fat: 16,
-                ingredients: [{ base: "130g Halal Lean Beef strips", subs: ["130g Halal Chicken Thigh strips", "130g Tempeh strips"] }, "1.5 cups Broccoli florets", { base: "1/2 cup cooked Brown Rice", subs: ["1/2 cup cooked Quinoa", "1 cup Cauliflower Rice"] }, "1 tbsp Soy Sauce (Alcohol-free/Halal)", "Garlic & Ginger"],
-                instructions: "Stir-fry the Halal beef strips in a pan with garlic and ginger until browned. Add broccoli and a splash of water, cover to steam for 3 mins. Add soy sauce and serve over your rice choice."
+                name: "Lentil Soup & Falafel Plate",
+                kcal: 520, pro: 30, carb: 65, fat: 16,
+                ingredients: [{ base: "200g Lentil Soup", subs: ["200g Chickpeas (Boiled)"] }, { base: "100g Falafel", subs: ["150g Tofu (Firm)"] }, { base: "1/2 Pita Bread", subs: ["50g Basmati Rice (Cooked)"] }, "100g Mixed Green Salad", "1 tbsp Tahini dressing"],
+                instructions: "Heat the lentil soup. Serve alongside warm falafel and a fresh mixed green salad drizzled with tahini. Use the pita for dipping."
             }
         ];
 
         const dinners = [
             {
-                name: "Baked Salmon with Sweet Potato",
+                name: "Baked Fish with Starchy Side",
                 kcal: 550, pro: 40, carb: 45, fat: 24,
-                ingredients: [{ base: "150g Atlantic Salmon fillet", subs: ["150g Halal Tilapia", "150g Halal Cod", "150g Halal Chicken Breast"] }, { base: "150g Sweet Potato (cubed)", subs: ["150g Baby Potatoes", "150g Butternut Squash"] }, "100g Asparagus", "1 tsp Olive Oil", "Lemon, salt, pepper"],
-                instructions: "Preheat oven to 400°F (200°C). Toss potato/squash cubes in olive oil and roast for 15 mins. Add salmon and asparagus to the pan, season with lemon and pepper, and bake for another 12-15 mins."
+                ingredients: [{ base: "150g Salmon (Baked)", subs: ["150g Tilapia (Baked)", "150g Shrimp (Boiled)"] }, { base: "150g Sweet Potato (Baked)", subs: ["150g Baked Potato", "100g Basmati Rice (Cooked)"] }, { base: "150g Broccoli (Steamed)", subs: ["150g Zucchini (Cooked)", "150g Eggplant (Grilled)"] }, "1 tsp Olive Oil", "Lemon, salt, pepper"],
+                instructions: "Warm the baked fish and potatoes. Serve alongside the steamed broccoli, seasoning everything with salt, pepper, and a squeeze of lemon."
             },
             {
-                name: "Halal Chicken Fajita Bowl",
-                kcal: 580, pro: 50, carb: 60, fat: 15,
-                ingredients: [{ base: "160g Halal Chicken Breast (sliced)", subs: ["160g Halal Beef strips", "160g Halal Turkey Breast"] }, { base: "1/2 cup Black Beans (rinsed)", subs: ["1/2 cup Pinto Beans", "1/2 cup Lentils"] }, "1/2 cup cooked White Rice", "1 Bell Pepper & 1/2 Onion (sliced)", "Fajita spices (cumin, paprika)"],
-                instructions: "Season Halal chicken with fajita spices. Sauté onions and peppers until soft, remove from pan. Cook chicken in the same pan. Assemble bowl with rice, beans, veggies, and chicken."
+                name: "Grilled Steak & Roasted Veggies",
+                kcal: 580, pro: 50, carb: 40, fat: 24,
+                ingredients: [{ base: "150g Halal Beef Steak (Grilled)", subs: ["150g Halal Lamb Chops (Grilled)", "150g Chicken Breast (Grilled)"] }, { base: "150g Mixed Roasted Veggies", subs: ["150g Broccoli (Steamed)", "150g Zucchini (Cooked)"] }, { base: "100g Couscous (Cooked)", subs: ["100g Quinoa (Cooked)"] }, "Garlic & Herb seasoning"],
+                instructions: "Reheat the grilled steak or lamb chops. Toss the mixed roasted veggies with garlic and herbs. Serve over a warm bed of couscous or quinoa."
             },
             {
-                name: "Lean Halal Ground Beef Pasta",
+                name: "Chicken Biryani & Raita Bowl",
                 kcal: 600, pro: 45, carb: 65, fat: 18,
-                ingredients: [{ base: "130g Halal 95% Lean Ground Beef", subs: ["130g Halal Ground Turkey", "130g Halal Ground Chicken"] }, { base: "2 oz (dry) Whole Wheat Pasta", subs: ["2 oz Chickpea Pasta", "1.5 cups Zucchini Noodles"] }, "1/2 cup Tomato Marinara Sauce (Check for no wine)", "Garlic, onions, Italian herbs"],
-                instructions: "Boil pasta according to package directions. Sauté onions and garlic, add Halal ground beef and cook until browned. Pour in marinara sauce and simmer. Mix with cooked pasta or noodles."
+                ingredients: [{ base: "250g Chicken Biryani", subs: ["150g Basmati Rice (Cooked) + 100g Chicken Breast (Grilled)"] }, { base: "100g Greek Yogurt (Plain)", subs: ["100g Labneh"] }, { base: "50g Cucumber", subs: ["50g Mixed Green Salad"] }, "Fresh mint & spices"],
+                instructions: "Warm the chicken biryani. Finely dice the cucumber and mix it into the Greek yogurt with a pinch of salt to create a quick cooling raita. Serve together."
             }
         ];
 
         const snacks = [
             {
-                name: "Cottage Cheese & Pineapple",
-                kcal: 200, pro: 24, carb: 20, fat: 3,
-                ingredients: [{ base: "1 cup Low-fat Cottage Cheese", subs: ["1 cup Greek Yogurt", "1 cup Skyr"] }, { base: "1/2 cup Pineapple chunks", subs: ["1/2 cup Peaches", "1/2 cup Cantaloupe"] }],
-                instructions: "Serve cottage cheese in a bowl topped with fresh or canned (in water) fruit chunks."
+                name: "Dates & Walnuts",
+                kcal: 260, pro: 5, carb: 40, fat: 14,
+                ingredients: [{ base: "50g Dates (Medjool)", subs: ["1 Medium Banana (Raw)", "100g Grapes", "100g Apple (Raw)"] }, { base: "20g Walnuts", subs: ["20g Almonds (Raw)", "20g Pistachios (Roasted)", "20g Sunflower Seeds"] }],
+                instructions: "Enjoy the dates and walnuts together for a nutrient-dense, natural energy boost."
             },
             {
-                name: "Hard-Boiled Eggs & Almonds",
-                kcal: 250, pro: 16, carb: 4, fat: 19,
-                ingredients: [{ base: "2 Large Eggs", subs: ["1/2 cup Edamame", "50g Halal Turkey Pepperoni"] }, { base: "15g Raw Almonds", subs: ["15g Walnuts", "15g Cashews"] }],
-                instructions: "Boil eggs for 9-12 minutes depending on desired doneness. Peel and eat alongside nuts."
+                name: "Watermelon & Feta Cheese",
+                kcal: 190, pro: 8, carb: 16, fat: 10,
+                ingredients: [{ base: "200g Watermelon", subs: ["200g Cucumber", "1 Apple (Raw)"] }, { base: "50g Feta Cheese", subs: ["50g Labneh", "50g Cream Cheese"] }],
+                instructions: "Cube the watermelon and top with crumbled feta cheese for a sweet, salty, and hydrating snack."
             },
             {
-                name: "Halal Beef Jerky & Apple",
-                kcal: 220, pro: 20, carb: 25, fat: 4,
-                ingredients: [{ base: "1.5 oz Halal-certified Beef Jerky", subs: ["1.5 oz Halal Turkey Jerky", "1/4 cup Roasted Chickpeas"] }, { base: "1 Medium Apple", subs: ["1 Medium Pear", "1 Medium Orange"] }],
-                instructions: "A quick, on-the-go snack. Eat the Halal beef jerky and fruit together for a sweet and savory mix."
+                name: "Rice Cakes & Spread",
+                kcal: 210, pro: 6, carb: 25, fat: 10,
+                ingredients: ["30g Rice Cakes (Plain)", { base: "30g Cream Cheese", subs: ["30g Labneh", "30g Hummus"] }],
+                instructions: "Spread the cream cheese or labneh evenly over the crunchy rice cakes."
             },
             {
-                name: "Simple Protein Shake",
-                kcal: 160, pro: 25, carb: 5, fat: 4,
-                ingredients: [{ base: "1 scoop Halal-certified Whey Protein", subs: ["1 scoop Vegan Protein Powder", "1/2 cup Greek Yogurt"] }, { base: "1 cup Unsweetened Almond Milk", subs: ["1 cup Water", "1 cup Soy Milk"] }, "Ice"],
-                instructions: "Combine protein powder, liquid, and ice in a shaker bottle or blender. Mix until smooth."
+                name: "Dark Chocolate & Nuts",
+                kcal: 240, pro: 5, carb: 15, fat: 18,
+                ingredients: ["20g Dark Chocolate (70%)", { base: "20g Almonds (Raw)", subs: ["20g Pistachios (Roasted)", "20g Walnuts"] }],
+                instructions: "A perfect antioxidant-rich treat. Let the dark chocolate melt in your mouth alongside the crunchy nuts."
             },
             {
-                name: "Tuna Salad on Cucumber Slices",
+                name: "Tuna Salad on Cucumber",
                 kcal: 180, pro: 22, carb: 5, fat: 8,
-                ingredients: [{ base: "1 can (chunk light) Tuna in water", subs: ["1 can Canned Chicken breast", "1/2 cup Mashed Chickpeas"] }, "1 tbsp Greek yogurt (sub for mayo)", { base: "1/2 large Cucumber (sliced)", subs: ["5 Whole Wheat Crackers", "2 Celery Stalks", "Lettuce Cups"] }],
-                instructions: "Drain tuna and mix with Greek yogurt, salt, and pepper. Spoon the mixture onto your chosen base."
+                ingredients: [{ base: "1 Canned Tuna (In Water)", subs: ["100g Chicken Breast (Grilled)"] }, "1 tbsp Greek Yogurt (Plain)", { base: "1/2 large Cucumber", subs: ["100g Carrots (Raw)", "30g Rice Cakes (Plain)"] }],
+                instructions: "Drain tuna and mix with Greek yogurt, salt, and pepper. Spoon the mixture onto thick cucumber slices or carrot sticks."
+            },
+             {
+                name: "Hard-Boiled Eggs",
+                kcal: 155, pro: 13, carb: 1, fat: 11,
+                ingredients: [{ base: "2 Eggs (Boiled)", subs: ["100g Edamame"] }],
+                instructions: "Peel and eat eggs with a pinch of salt and pepper."
             }
         ];
 
