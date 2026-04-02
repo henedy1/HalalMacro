@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halal Macro Planner | Custom kcal</title>
+    <title>Halal Macro Planner | Multi-Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Phosphor Icons for modern UI icons -->
@@ -37,88 +37,232 @@
         }
         .meal-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
         .transition-transform { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        
+        /* Hide scrollbar for tabs */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+    <!-- Global Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <i class="ph ph-leaf text-brand-600 text-3xl"></i>
                 <span class="font-bold text-xl tracking-tight text-slate-900">Halal<span class="text-brand-600">Macro</span></span>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                    <label for="target-calories" class="text-sm font-medium text-slate-600">Target kcal:</label>
-                    <input type="number" id="target-calories" value="1825" step="50" class="w-20 bg-transparent font-bold text-slate-900 focus:outline-none">
-                </div>
-                <button onclick="generateAndRenderPlan()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
-                    <i class="ph ph-arrows-clockwise text-lg"></i>
-                    <span class="hidden sm:inline">Generate New Daily Plan</span>
-                    <span class="sm:hidden">New Plan</span>
-                </button>
+            <div class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+                <i class="ph ph-user"></i> My Plan
             </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto no-scrollbar gap-6 border-t border-slate-100 bg-white">
+            <button id="btn-daily" onclick="switchTab('daily')" class="tab-btn whitespace-nowrap py-3 px-1 border-b-2 border-brand-600 text-brand-600 font-semibold text-sm transition-colors">
+                📅 Daily Plan
+            </button>
+            <button id="btn-single" onclick="switchTab('single')" class="tab-btn whitespace-nowrap py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-semibold text-sm transition-colors">
+                🍽️ Single Meal Suggestion
+            </button>
+            <button id="btn-tracker" onclick="switchTab('tracker')" class="tab-btn whitespace-nowrap py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-semibold text-sm transition-colors">
+                📝 Macro Tracker
+            </button>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         
-        <!-- Empty State (Shown initially) -->
-        <div id="empty-state" class="flex flex-col items-center justify-center py-20 text-center">
-            <div class="bg-brand-50 p-6 rounded-full mb-6">
-                <i class="ph ph-bowl-food text-6xl text-brand-600"></i>
-            </div>
-            <h1 class="text-3xl font-bold text-slate-900 mb-4">Your Custom Halal Plan</h1>
-            <p class="text-slate-500 max-w-lg mb-8 text-lg">Set your target calories in the top right, then click the button below to generate a randomized daily meal plan using strictly Halal ingredients.</p>
-            
-            <div class="md:hidden flex items-center justify-center gap-2 bg-slate-100 px-4 py-3 rounded-xl border border-slate-200 mb-6">
-                <label for="target-calories-mobile" class="text-sm font-medium text-slate-600">Target kcal:</label>
-                <input type="number" id="target-calories-mobile" value="1825" step="50" onchange="document.getElementById('target-calories').value = this.value" class="w-20 bg-transparent font-bold text-slate-900 focus:outline-none text-lg">
+        <!-- ============================== -->
+        <!-- TAB 1: DAILY PLAN (Existing)   -->
+        <!-- ============================== -->
+        <div id="tab-daily" class="tab-content">
+            <!-- Empty State -->
+            <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="bg-brand-50 p-6 rounded-full mb-6">
+                    <i class="ph ph-bowl-food text-6xl text-brand-600"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 mb-4">Your Custom Halal Plan</h1>
+                <p class="text-slate-500 max-w-lg mb-8 text-lg">Generate a randomized full-day meal plan perfectly calculated to hit your goals.</p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6">
+                    <div class="flex items-center gap-2 bg-slate-50 px-4 py-3 rounded-xl border border-slate-100 w-full sm:w-auto">
+                        <label for="target-calories" class="text-sm font-medium text-slate-600 whitespace-nowrap">Target kcal:</label>
+                        <input type="number" id="target-calories" value="1825" step="50" class="w-24 bg-transparent font-bold text-lg text-slate-900 focus:outline-none">
+                    </div>
+                    <button onclick="generateAndRenderPlan()" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        <i class="ph ph-magic-wand text-xl"></i> Generate Plan
+                    </button>
+                </div>
             </div>
 
-            <button onclick="generateAndRenderPlan()" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-lg shadow-brand-500/30 flex items-center gap-2">
-                <i class="ph ph-magic-wand text-xl"></i> Generate My First Plan
-            </button>
+            <!-- Plan Container (Hidden initially) -->
+            <div id="plan-container" class="hidden flex-col gap-8">
+                
+                <!-- Daily Actions Bar (Visible after generation) -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm fade-in">
+                    <div class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+                        <label class="text-sm font-medium text-slate-600">Target kcal:</label>
+                        <input type="number" id="target-calories-active" value="1825" step="50" onchange="document.getElementById('target-calories').value = this.value" class="w-20 bg-transparent font-bold text-slate-900 focus:outline-none">
+                    </div>
+                    <button onclick="generateAndRenderPlan()" class="bg-brand-100 hover:bg-brand-200 text-brand-700 px-6 py-2 rounded-xl font-semibold transition-colors flex items-center gap-2">
+                        <i class="ph ph-arrows-clockwise text-lg"></i> Re-roll Plan
+                    </button>
+                </div>
+
+                <!-- Daily Summary Dashboard -->
+                <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 fade-in">
+                    <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="ph ph-chart-pie-slice text-brand-600 text-xl"></i> Generated Plan Totals
+                    </h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
+                            <p class="text-sm text-slate-500 font-medium mb-1">Calories</p>
+                            <p class="text-2xl font-bold text-slate-900" id="total-kcal">0</p>
+                            <p class="text-xs text-slate-400 mt-1" id="goal-kcal-text">Goal: 1825 kcal</p>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 text-center">
+                            <p class="text-sm text-blue-600 font-medium mb-1">Protein</p>
+                            <p class="text-2xl font-bold text-slate-900" id="total-pro">0g</p>
+                            <p class="text-xs text-slate-400 mt-1" id="goal-pro-text">Goal: 130-155g</p>
+                        </div>
+                        <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 text-center">
+                            <p class="text-sm text-amber-600 font-medium mb-1">Carbs</p>
+                            <p class="text-2xl font-bold text-slate-900" id="total-carb">0g</p>
+                        </div>
+                        <div class="bg-rose-50 rounded-xl p-4 border border-rose-100 text-center">
+                            <p class="text-sm text-rose-600 font-medium mb-1">Fats</p>
+                            <p class="text-2xl font-bold text-slate-900" id="total-fat">0g</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Meals List -->
+                <section class="space-y-6" id="meals-list">
+                    <!-- Meal cards injected via JS -->
+                </section>
+            </div>
         </div>
 
-        <!-- Plan Container (Hidden initially) -->
-        <div id="plan-container" class="hidden flex-col gap-8">
+        <!-- ============================== -->
+        <!-- TAB 2: SINGLE MEAL SUGGESTION  -->
+        <!-- ============================== -->
+        <div id="tab-single" class="tab-content hidden fade-in">
+            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 text-center max-w-3xl mx-auto mb-8">
+                <div class="bg-amber-50 p-4 rounded-full inline-block mb-4">
+                    <i class="ph ph-magnifying-glass text-4xl text-amber-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Single Meal Generator</h2>
+                <p class="text-slate-500 mb-8">Need a quick meal idea? Pick your meal type and calorie target, and we'll suggest the closest match from the database.</p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <select id="single-type" class="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 w-full sm:w-auto font-medium text-slate-700 shadow-sm cursor-pointer">
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snack">Snack</option>
+                    </select>
+                    
+                    <div class="flex items-center gap-2 bg-white border border-slate-200 px-4 py-3 rounded-xl w-full sm:w-auto shadow-sm">
+                        <label class="text-slate-500 text-sm font-medium">Target kcal:</label>
+                        <input type="number" id="single-target" value="500" step="50" class="w-16 bg-transparent font-bold text-slate-900 focus:outline-none">
+                    </div>
+                    
+                    <button onclick="generateSingleMeal()" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        <i class="ph ph-sparkle text-lg"></i> Find Meal
+                    </button>
+                </div>
+            </section>
+
+            <!-- Result -->
+            <div id="single-meal-result" class="max-w-3xl mx-auto">
+                <!-- Single meal card injected via JS -->
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- TAB 3: MACRO TRACKER           -->
+        <!-- ============================== -->
+        <div id="tab-tracker" class="tab-content hidden fade-in space-y-6">
             
-            <!-- Daily Summary Dashboard -->
-            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 fade-in">
-                <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="ph ph-chart-pie-slice text-brand-600 text-xl"></i> Daily Macro Targets
+            <!-- Tracker Dashboard -->
+            <section class="bg-brand-600 rounded-2xl p-6 shadow-sm text-white">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="ph ph-notebook text-2xl"></i> Today's Tracked Intake
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-center">
-                        <p class="text-sm text-slate-500 font-medium mb-1">Calories</p>
-                        <p class="text-2xl font-bold text-slate-900" id="total-kcal">0</p>
-                        <p class="text-xs text-slate-400 mt-1" id="goal-kcal-text">Goal: 1825 kcal</p>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
+                        <p class="text-sm text-white/80 font-medium mb-1">Calories</p>
+                        <p class="text-3xl font-bold" id="trk-tot-kcal">0</p>
                     </div>
-                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 text-center">
-                        <p class="text-sm text-blue-600 font-medium mb-1">Protein</p>
-                        <p class="text-2xl font-bold text-slate-900" id="total-pro">0g</p>
-                        <p class="text-xs text-slate-400 mt-1" id="goal-pro-text">Goal: 130-155g</p>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
+                        <p class="text-sm text-white/80 font-medium mb-1">Protein</p>
+                        <p class="text-2xl font-bold mt-1" id="trk-tot-pro">0g</p>
                     </div>
-                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 text-center">
-                        <p class="text-sm text-amber-600 font-medium mb-1">Carbs</p>
-                        <p class="text-2xl font-bold text-slate-900" id="total-carb">0g</p>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
+                        <p class="text-sm text-white/80 font-medium mb-1">Carbs</p>
+                        <p class="text-2xl font-bold mt-1" id="trk-tot-carb">0g</p>
                     </div>
-                    <div class="bg-rose-50 rounded-xl p-4 border border-rose-100 text-center">
-                        <p class="text-sm text-rose-600 font-medium mb-1">Fats</p>
-                        <p class="text-2xl font-bold text-slate-900" id="total-fat">0g</p>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 text-center">
+                        <p class="text-sm text-white/80 font-medium mb-1">Fats</p>
+                        <p class="text-2xl font-bold mt-1" id="trk-tot-fat">0g</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Meals List -->
-            <section class="space-y-6" id="meals-list">
-                <!-- Meal cards will be injected here via JS -->
-            </section>
+            <!-- Tracker Form & List -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Add Food Form -->
+                <div class="md:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-fit sticky top-24">
+                    <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="ph ph-plus-circle text-brand-600 text-lg"></i> Quick Log
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-600 mb-1 font-medium">Food Name</label>
+                            <input type="text" id="track-name" placeholder="e.g. Halal Beef Shawarma" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:bg-white transition-colors">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-slate-600 mb-1 font-medium">Kcal</label>
+                                <input type="number" id="track-kcal" placeholder="0" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:bg-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-600 mb-1 font-medium">Protein (g)</label>
+                                <input type="number" id="track-pro" placeholder="0" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:bg-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-600 mb-1 font-medium">Carbs (g)</label>
+                                <input type="number" id="track-carb" placeholder="0" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:bg-white transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-600 mb-1 font-medium">Fat (g)</label>
+                                <input type="number" id="track-fat" placeholder="0" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:bg-white transition-colors">
+                            </div>
+                        </div>
+                        <button onclick="addTrackedFood()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 mt-2 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 shadow-sm">
+                            Add to Log
+                        </button>
+                    </div>
+                </div>
 
+                <!-- Food List -->
+                <div class="md:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="ph ph-list-bullets text-brand-600 text-lg"></i> Food Log
+                    </h3>
+                    <div id="tracker-list" class="space-y-3">
+                        <!-- Default state -->
+                        <div id="tracker-empty" class="text-center py-10 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                            <i class="ph ph-clipboard-text text-4xl text-slate-300 mb-2"></i>
+                            <p class="text-slate-500 text-sm">No foods logged yet today.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </main>
 
     <!-- Footer -->
@@ -129,9 +273,25 @@
     </footer>
 
     <script>
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Reset all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-brand-600', 'text-brand-600');
+                el.classList.add('border-transparent', 'text-slate-500');
+            });
+            
+            // Show selected tab & highlight button
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.remove('border-transparent', 'text-slate-500');
+            document.getElementById(`btn-${tabId}`).classList.add('border-brand-600', 'text-brand-600');
+        }
+
         // --- MOCK DATA ---
         // All meat is explicitly marked Halal. No alcohol/wine used in any recipes.
-        // Some ingredients now contain {base, subs} for easy swapping.
         
         const breakfasts = [
             {
@@ -247,28 +407,108 @@
             }
         ];
 
-        // --- ALGORITHM ---
-        // Generates random combinations until it finds one that fits the calorie and protein goals.
+        // --- HELPER FUNCTIONS ---
+        function getIconForType(type) {
+            if(type.includes('Breakfast')) return 'ph-sun';
+            if(type.includes('Lunch')) return 'ph-hamburger';
+            if(type.includes('Dinner')) return 'ph-moon-stars';
+            return 'ph-apple-podcasts';
+        }
+
+        // Shared function to render a meal card to keep code clean
+        function createMealCardHTML(item, delay = 0) {
+            const meal = item.data;
+            const ingredientsHtml = meal.ingredients.map(ing => {
+                if (typeof ing === 'string') {
+                    return `<li class="flex items-start gap-2 text-sm">
+                                <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
+                                <span class="ingredient-text">${ing}</span>
+                            </li>`;
+                } else {
+                    const allOptions = [ing.base, ...ing.subs];
+                    const optionsJson = JSON.stringify(allOptions).replace(/"/g, '&quot;');
+                    return `<li class="flex items-start gap-2 text-sm group">
+                                <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
+                                <span class="ingredient-text transition-colors duration-300">${ing.base}</span>
+                                <button onclick="swapIngredient(this)" data-options="${optionsJson}" class="ml-auto text-slate-300 hover:text-brand-600 focus:outline-none transition-colors" title="Swap for roughly equivalent alternative">
+                                    <i class="ph ph-arrows-left-right text-base"></i>
+                                </button>
+                            </li>`;
+                }
+            }).join('');
+
+            return `
+                <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden meal-card transition-transform fade-in" style="animation-delay: ${delay}s; animation-fill-mode: both;">
+                    <div class="p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4 border-b border-slate-100 pb-4">
+                            <div>
+                                <div class="flex items-center gap-2 text-brand-600 font-semibold text-sm mb-1 uppercase tracking-wider">
+                                    <i class="ph ${item.icon} text-lg"></i> ${item.type}
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-900">${meal.name}</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2 sm:justify-end">
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm font-semibold">${meal.kcal} kcal</span>
+                                <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">P: ${meal.pro}g</span>
+                                <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">C: ${meal.carb}g</span>
+                                <span class="bg-rose-50 text-rose-700 px-3 py-1 rounded-full text-sm font-semibold">F: ${meal.fat}g</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="ph ph-shopping-basket"></i> Ingredients
+                                </h4>
+                                <ul class="space-y-2 text-slate-600">
+                                    ${ingredientsHtml}
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl">
+                                <h4 class="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
+                                    <i class="ph ph-cooking-pot"></i> Instructions
+                                </h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    ${meal.instructions}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function swapIngredient(btn) {
+            const span = btn.parentElement.querySelector('.ingredient-text');
+            const options = JSON.parse(btn.getAttribute('data-options'));
+            
+            let currentIdx = options.indexOf(span.innerText);
+            let nextIdx = (currentIdx + 1) % options.length;
+            span.innerText = options[nextIdx];
+            
+            span.classList.add('text-brand-600', 'font-medium');
+            setTimeout(() => { span.classList.remove('text-brand-600', 'font-medium'); }, 400);
+        }
+
+        // --- 1. DAILY PLAN ALGORITHM ---
         function generateMealPlan() {
             let bestPlan = null;
             let bestDiff = 9999;
-            let validPlans = []; // Pool to store all perfect matches
+            let validPlans = [];
             
-            // Get target from input
             const targetInput = document.getElementById('target-calories');
-            const targetKcal = parseInt(targetInput ? targetInput.value : 1825) || 1825;
+            const targetInputActive = document.getElementById('target-calories-active');
+            // Check whichever input is currently visible/used
+            const targetKcal = parseInt(targetInputActive ? targetInputActive.value : (targetInput ? targetInput.value : 1825)) || 1825;
             
-            // Scale protein roughly based on calories (approx 0.071 to 0.085g per kcal)
             const minPro = Math.floor(targetKcal * 0.071);
             const maxPro = Math.floor(targetKcal * 0.085);
 
-            // Try up to 2000 random combinations to find the perfect fit
             for (let i = 0; i < 2000; i++) {
                 const b = breakfasts[Math.floor(Math.random() * breakfasts.length)];
                 const l = lunches[Math.floor(Math.random() * lunches.length)];
                 const d = dinners[Math.floor(Math.random() * dinners.length)];
                 
-                // Dynamically adjust number of snacks based on target calories
                 let numSnacks = 1;
                 if (targetKcal > 2100) numSnacks = Math.random() > 0.5 ? 3 : 2;
                 else if (targetKcal > 1700) numSnacks = Math.random() > 0.5 ? 2 : 1;
@@ -281,7 +521,7 @@
                     if (availableSnacks.length === 0) break;
                     const snackIdx = Math.floor(Math.random() * availableSnacks.length);
                     s.push(availableSnacks[snackIdx]);
-                    availableSnacks.splice(snackIdx, 1); // Prevent duplicate snacks
+                    availableSnacks.splice(snackIdx, 1);
                 }
 
                 const totalKcal = b.kcal + l.kcal + d.kcal + s.reduce((sum, sn) => sum + sn.kcal, 0);
@@ -290,7 +530,6 @@
                 const totalFat = b.fat + l.fat + d.fat + s.reduce((sum, sn) => sum + sn.fat, 0);
 
                 const kcalDiff = Math.abs(totalKcal - targetKcal);
-                // Be slightly more lenient with macros if target is far from the 1825 base
                 const validMacros = totalPro >= (minPro - 10) && totalPro <= (maxPro + 10);
 
                 const plan = {
@@ -303,65 +542,42 @@
                     targets: { kcal: targetKcal, minPro, maxPro }
                 };
 
-                // Add snacks to the meal array
                 s.forEach((snack, index) => {
                     plan.meals.push({ type: `Snack ${index + 1}`, icon: 'ph-apple-podcasts', data: snack });
                 });
 
-                // If within 40 calories and protein is good, add to our pool of valid plans!
                 if (kcalDiff <= 40 && validMacros) {
                     validPlans.push(plan);
-                    // Once we find 30 different valid combinations, stop looping to save processing power
                     if (validPlans.length >= 30) break; 
                 }
 
-                // Track the closest one overall in case we fail to find ANY perfect match
                 if (kcalDiff < bestDiff) {
                     bestDiff = kcalDiff;
                     bestPlan = plan;
                 }
             }
             
-            // If we found perfect matches, pick one entirely at random!
-            if (validPlans.length > 0) {
-                return validPlans[Math.floor(Math.random() * validPlans.length)];
-            }
-            
-            return bestPlan; // Fallback: Return the closest match found if no perfect ones exist
+            if (validPlans.length > 0) return validPlans[Math.floor(Math.random() * validPlans.length)];
+            return bestPlan; 
         }
 
-        // --- UI RENDERING ---
         function generateAndRenderPlan() {
-            // Sync mobile input with desktop input if used
-            const mobileInput = document.getElementById('target-calories-mobile');
-            const desktopInput = document.getElementById('target-calories');
-            if (mobileInput && desktopInput && document.getElementById('empty-state').classList.contains('hidden') === false) {
-                 desktopInput.value = mobileInput.value;
-            }
-
-            // Hide empty state, show plan container
             document.getElementById('empty-state').classList.add('hidden');
             const planContainer = document.getElementById('plan-container');
             planContainer.classList.remove('hidden');
             
-            // Generate data
             const plan = generateMealPlan();
-
-            // Re-trigger animations by briefly removing and adding the container contents
             const mealsList = document.getElementById('meals-list');
             mealsList.innerHTML = ''; 
 
-            // Update Dashboard
             document.getElementById('total-kcal').innerText = plan.totals.kcal;
             document.getElementById('total-pro').innerText = plan.totals.pro + 'g';
             document.getElementById('total-carb').innerText = plan.totals.carb + 'g';
             document.getElementById('total-fat').innerText = plan.totals.fat + 'g';
             
-            // Update Goal Texts
             document.getElementById('goal-kcal-text').innerText = `Goal: ${plan.targets.kcal} kcal`;
             document.getElementById('goal-pro-text').innerText = `Goal: ${plan.targets.minPro}-${plan.targets.maxPro}g`;
 
-            // Reorder meals logically: Breakfast, Lunch, Snack 1, Dinner, Snack 2
             const orderedMeals = [];
             const m = plan.meals;
             const b = m.find(x => x.type === 'Breakfast');
@@ -378,89 +594,132 @@
             if(s2) orderedMeals.push(s2);
             if(s3) orderedMeals.push(s3);
 
-            // Render Meals
             orderedMeals.forEach((item, index) => {
-                const meal = item.data;
-                const delay = index * 0.1; // Staggered animation delay
-                
-                const ingredientsHtml = meal.ingredients.map(ing => {
-                    if (typeof ing === 'string') {
-                        return `<li class="flex items-start gap-2 text-sm">
-                                    <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
-                                    <span class="ingredient-text">${ing}</span>
-                                </li>`;
-                    } else {
-                        const allOptions = [ing.base, ...ing.subs];
-                        const optionsJson = JSON.stringify(allOptions).replace(/"/g, '&quot;');
-                        return `<li class="flex items-start gap-2 text-sm group">
-                                    <i class="ph ph-check-circle text-brand-500 mt-0.5"></i> 
-                                    <span class="ingredient-text transition-colors duration-300">${ing.base}</span>
-                                    <button onclick="swapIngredient(this)" data-options="${optionsJson}" class="ml-auto text-slate-300 hover:text-brand-600 focus:outline-none transition-colors" title="Swap for roughly equivalent alternative">
-                                        <i class="ph ph-arrows-left-right text-base"></i>
-                                    </button>
-                                </li>`;
-                    }
-                }).join('');
-
-                const cardHtml = `
-                    <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden meal-card transition-transform fade-in" style="animation-delay: ${delay}s; animation-fill-mode: both;">
-                        <div class="p-6">
-                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4 border-b border-slate-100 pb-4">
-                                <div>
-                                    <div class="flex items-center gap-2 text-brand-600 font-semibold text-sm mb-1 uppercase tracking-wider">
-                                        <i class="ph ${item.icon} text-lg"></i> ${item.type}
-                                    </div>
-                                    <h3 class="text-xl font-bold text-slate-900">${meal.name}</h3>
-                                </div>
-                                <div class="flex flex-wrap gap-2 sm:justify-end">
-                                    <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm font-semibold">${meal.kcal} kcal</span>
-                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">P: ${meal.pro}g</span>
-                                    <span class="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">C: ${meal.carb}g</span>
-                                    <span class="bg-rose-50 text-rose-700 px-3 py-1 rounded-full text-sm font-semibold">F: ${meal.fat}g</span>
-                                </div>
-                            </div>
-                            
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="font-semibold text-slate-800 mb-3 text-sm uppercase tracking-wide flex items-center gap-2">
-                                        <i class="ph ph-shopping-basket"></i> Ingredients
-                                    </h4>
-                                    <ul class="space-y-2 text-slate-600">
-                                        ${ingredientsHtml}
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-50 p-4 rounded-xl">
-                                    <h4 class="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
-                                        <i class="ph ph-cooking-pot"></i> Instructions
-                                    </h4>
-                                    <p class="text-slate-600 text-sm leading-relaxed">
-                                        ${meal.instructions}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                `;
-                mealsList.insertAdjacentHTML('beforeend', cardHtml);
+                mealsList.insertAdjacentHTML('beforeend', createMealCardHTML(item, index * 0.1));
             });
         }
 
-        // --- INTERACTIVITY ---
-        function swapIngredient(btn) {
-            const span = btn.parentElement.querySelector('.ingredient-text');
-            const options = JSON.parse(btn.getAttribute('data-options'));
+        // --- 2. SINGLE MEAL ALGORITHM ---
+        function generateSingleMeal() {
+            const type = document.getElementById('single-type').value;
+            const targetKcal = parseInt(document.getElementById('single-target').value) || 500;
             
-            // Find current index and cycle to the next one
-            let currentIdx = options.indexOf(span.innerText);
-            let nextIdx = (currentIdx + 1) % options.length;
-            span.innerText = options[nextIdx];
-            
-            // Quick visual highlight to show it changed
-            span.classList.add('text-brand-600', 'font-medium');
+            let database = [];
+            if(type === 'Breakfast') database = breakfasts;
+            else if(type === 'Lunch') database = lunches;
+            else if(type === 'Dinner') database = dinners;
+            else database = snacks;
+
+            let bestMatch = null;
+            let minDiff = Infinity;
+            let validMatches = [];
+
+            // Find meals close to target
+            database.forEach(meal => {
+                const diff = Math.abs(meal.kcal - targetKcal);
+                if (diff <= 50) validMatches.push(meal); // Within 50 kcal is considered perfect
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    bestMatch = meal;
+                }
+            });
+
+            // Randomly pick from good matches, or use the single closest one
+            const finalMeal = validMatches.length > 0 
+                ? validMatches[Math.floor(Math.random() * validMatches.length)] 
+                : bestMatch;
+
+            const formattedItem = {
+                type: type,
+                icon: getIconForType(type),
+                data: finalMeal
+            };
+
+            const resultContainer = document.getElementById('single-meal-result');
+            // Briefly clear and re-render to trigger animation
+            resultContainer.innerHTML = '';
             setTimeout(() => {
-                span.classList.remove('text-brand-600', 'font-medium');
-            }, 400);
+                resultContainer.innerHTML = createMealCardHTML(formattedItem, 0);
+            }, 10);
         }
+
+        // --- 3. MACRO TRACKER LOGIC ---
+        let trackedFoods = [];
+
+        function addTrackedFood() {
+            const name = document.getElementById('track-name').value.trim() || 'Custom Food Item';
+            const kcal = parseInt(document.getElementById('track-kcal').value) || 0;
+            const pro = parseInt(document.getElementById('track-pro').value) || 0;
+            const carb = parseInt(document.getElementById('track-carb').value) || 0;
+            const fat = parseInt(document.getElementById('track-fat').value) || 0;
+
+            const entry = {
+                id: Date.now(), // unique ID for deleting
+                name, kcal, pro, carb, fat
+            };
+
+            trackedFoods.push(entry);
+            
+            // Clear inputs
+            document.getElementById('track-name').value = '';
+            document.getElementById('track-kcal').value = '';
+            document.getElementById('track-pro').value = '';
+            document.getElementById('track-carb').value = '';
+            document.getElementById('track-fat').value = '';
+
+            renderTracker();
+        }
+
+        function removeTrackedFood(id) {
+            trackedFoods = trackedFoods.filter(food => food.id !== id);
+            renderTracker();
+        }
+
+        function renderTracker() {
+            let totKcal = 0, totPro = 0, totCarb = 0, totFat = 0;
+            const listContainer = document.getElementById('tracker-list');
+            
+            if (trackedFoods.length === 0) {
+                listContainer.innerHTML = `
+                    <div id="tracker-empty" class="text-center py-10 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                        <i class="ph ph-clipboard-text text-4xl text-slate-300 mb-2"></i>
+                        <p class="text-slate-500 text-sm">No foods logged yet today.</p>
+                    </div>`;
+            } else {
+                listContainer.innerHTML = ''; // clear
+                trackedFoods.forEach(food => {
+                    totKcal += food.kcal;
+                    totPro += food.pro;
+                    totCarb += food.carb;
+                    totFat += food.fat;
+
+                    const itemHtml = `
+                        <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl fade-in">
+                            <div>
+                                <h4 class="font-bold text-slate-800">${food.name}</h4>
+                                <div class="flex gap-3 text-xs font-medium mt-1">
+                                    <span class="text-slate-500">${food.kcal} kcal</span>
+                                    <span class="text-blue-600">P: ${food.pro}g</span>
+                                    <span class="text-amber-600">C: ${food.carb}g</span>
+                                    <span class="text-rose-600">F: ${food.fat}g</span>
+                                </div>
+                            </div>
+                            <button onclick="removeTrackedFood(${food.id})" class="text-slate-300 hover:text-red-500 p-2 transition-colors" title="Remove Entry">
+                                <i class="ph ph-trash text-xl"></i>
+                            </button>
+                        </div>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', itemHtml);
+                });
+            }
+
+            // Update dashboard
+            document.getElementById('trk-tot-kcal').innerText = totKcal;
+            document.getElementById('trk-tot-pro').innerText = totPro + 'g';
+            document.getElementById('trk-tot-carb').innerText = totCarb + 'g';
+            document.getElementById('trk-tot-fat').innerText = totFat + 'g';
+        }
+
     </script>
 </body>
 </html>
